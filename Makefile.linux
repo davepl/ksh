@@ -33,7 +33,7 @@ config.h:	config.linux.h
 	ln -s config.linux.h config.h
 
 ksh.1: ksh.Man mkman.sh
-	./mkman.sh ksh $ksh.Man > ksh.1.tmp && mv ksh.1.tmp ksh.1
+	./mkman.sh ksh ksh.Man > ksh.1.tmp && mv ksh.1.tmp ksh.1
 
 ksh.0:	ksh.1
 	tbl ksh.1 | nroff -man -h > ksh.0
