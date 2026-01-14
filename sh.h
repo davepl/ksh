@@ -200,10 +200,6 @@ typedef	RETSIGTYPE (*handler_t) ARGS((int));	/* signal handler */
 # define DEFAULT__PATH DEFAULT_PATH
 #endif /* _PATH_DEFPATH */
 
-#ifndef offsetof
-# define offsetof(type,id) ((size_t)&((type*)NULL)->id)
-#endif
-
 #ifndef HAVE_KILLPG
 # define killpg(p, s)	kill(-(p), (s))
 #endif /* !HAVE_KILLPG */

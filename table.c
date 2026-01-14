@@ -12,6 +12,10 @@ __RCSID("$NetBSD: table.c,v 1.4 2003/06/23 11:39:04 agc Exp $");
 
 #include "sh.h"
 
+#ifndef offsetof
+# define offsetof(type,id) ((size_t)&((type*)NULL)->id)
+#endif
+
 #define	INIT_TBLS	8	/* initial table size (power of 2) */
 
 static void     texpand     ARGS((struct table *tp, int nsize));
