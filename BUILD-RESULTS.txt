@@ -53,3 +53,20 @@ changes; the bootstrap snapshot is supplied separately inside the archive.
 Publication packaging preserves the tested C and runtime sources and bootstrap
 objects. The tested Makefile is now Makefile.mentec; Makefile.2bsd is the
 upstream version. The build entry point now works from any source directory.
+
+Public checkout reproduction check - 2026-09-28
+----------------------------------------------
+A plain tar generated solely from the staged Git tree was extracted into
+/home/dave/source/repos/ksh-publish-check and built as dave with the
+published mentec-build.sh entry point. This was a fresh source directory,
+with no generated objects or helpers carried over from the original build.
+The new executable has the same SHA256 recorded above (byte-identical).
+A fresh HTTPS clone of https://github.com/davepl/ksh.git matched the local
+commit and all 28 files in the compiler snapshot passed SHA256 validation.
+
+During this check the original autoload test was found to accept printed
+output even when its fixture did not define the expected function. The
+fixture now defines a function, and the test checks successful loading as
+well as output. The corrected suite ran against the freshly built shell:
+67 passed, 0 failed, with no autoload diagnostic.
+No C source, runtime code, or compiler inputs changed for this correction.

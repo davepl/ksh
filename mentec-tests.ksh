@@ -119,11 +119,10 @@ wait "$pid"
 check background-exit eq "$?" 7
 print 'print sourced' > "$work/include"
 check dot-source eq "$(. "$work/include")" sourced
-print 'print autoloaded' > "$work/loaded"
+print 'function loaded { print autoloaded; }' > "$work/loaded"
 FPATH=$work
 export FPATH
-autoload loaded
-check autoload eq "$(loaded)" autoloaded
+check autoload "$SHELL_UNDER_TEST" -c 'autoload loaded; result=$(loaded) || exit 1; test "$result" = autoloaded'
 check getopts "$SHELL_UNDER_TEST" -c 'set -- -a -b value; getopts ab: o && test "$o" = a && getopts ab: o && test "$o:$OPTARG" = b:value'
 check test-operators "$SHELL_UNDER_TEST" -c '[[ abc = a* && 7 -gt 3 && -n yes ]]'
 check executable-path test -x "$SHELL_UNDER_TEST"
