@@ -371,11 +371,13 @@ parse_args(argv, what, setargsp)
 		strlcpy(set_opts, "A:o;s", sizeof set_opts);
 		q = set_opts + strlen(set_opts);
 		for (i = 0; i < NELEM(goptions); i++) {
-			if (goptions[i].c) {
+			/* Avoid a native cc bug combining const members and *p++. */
+			optc = goptions[i].c;
+			if (optc) {
 				if (goptions[i].flags & OF_CMDLINE)
-					*p++ = goptions[i].c;
+					*p++ = optc;
 				if (goptions[i].flags & OF_SET)
-					*q++ = goptions[i].c;
+					*q++ = optc;
 			}
 		}
 		*p = '\0';

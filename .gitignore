@@ -57,3 +57,22 @@ dkms.conf
 # Visual Studio / VSCode files
 .vs/
 .vscode/
+# Local configuration and generated Mentec outputs
+/Makefile
+/config.h
+/ksh
+/ksh.0
+/ksh.1
+/*.log
+/*.tmp
+/*.i
+/*.c0
+/*.str
+/*.s
+/core
+/native-tools/c0
+/native-tools/c1
+/native-tools/*.cpp
+/native-tools/*.as
+# Preserved compiler bootstrap inputs must be present in every clone.
+!/native-tools/from-host/*.o

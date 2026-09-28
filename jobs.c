@@ -227,7 +227,8 @@ static Proc		*new_proc ARGS((void));
 static void		check_job ARGS((Job *j));
 static void		put_job ARGS((Job *j, int where));
 static void		remove_job ARGS((Job *j, const char *where));
-static int		kill_job ARGS((Job *j, int sig));
+/* Native cc at 2.11BSD PL498 miscounts some calls to this prototype. */
+static int		kill_job();
 
 /* initialize job control */
 void
