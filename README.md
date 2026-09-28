@@ -1,3 +1,79 @@
+# pdksh for 2.11BSD on Mentec
+
+This fork of [John D. Bruner's PDP-11 port](https://github.com/jdbruner/ksh)
+adds the local compiler/runtime support used to build and run pdksh 5.2.14
+on Dave Plummer's Mentec with **2.11BSD patch level 498**. Bruner did the
+original PDP-11 port of the NetBSD shell; this fork adds the Mentec
+stack-growth workaround, a reproducible build entry point, and regression tests.
+
+## Reproduce the Mentec build
+
+On a modern machine:
+
+```sh
+git clone https://github.com/davepl/ksh.git
+cd ksh
+# Verify the preserved compiler inputs (macOS; use sha256sum on Linux).
+(cd native-tools/from-host && shasum -a 256 -c SHA256)
+# Make a plain tar suitable for transfer to 2.11BSD.
+git archive --format=tar HEAD > ../ksh-source.tar
+```
+
+Transfer `ksh-source.tar` in binary mode to your 2.11BSD system. As the
+user who should own the source files:
+
+```sh
+mkdir ksh
+cd ksh
+tar xf ../ksh-source.tar
+/bin/sh ./mentec-build.sh
+./ksh
+```
+
+The build requires the native 2.11BSD C development tools and libc,
+`make`, `mkdep`, `sed`, `awk`, `tbl`, and `nroff`. Patch level 498 is the
+validated environment. Other patch levels, machines, and emulators have
+not been validated with this workaround. The upstream build below has
+its own requirements.
+
+A fresh checkout contains the small **compiler bootstrap object snapshot**
+and its source in `native-tools/from-host/`. Those `.o` files are intentional
+build inputs: they allow private compiler passes to be linked before relying
+on the compiler runtime affected by the stack problem. No Git LFS, downloads,
+or modern build tools are required on the PDP-11. This is a native shell build
+from source using preserved compiler objects, not a compiler bootstrap from
+source alone. See [native-tools/README](native-tools/README) for provenance.
+
+The script selects `Makefile.mentec`, rebuilds private compiler/runtime helpers,
+cleans and compiles the shell, and runs **67 regression tests**. Expect
+`67 passed, 0 failed`. Logs remain in `build.log`, `depend.log`, and `tests.log`.
+If another `Makefile` is already selected, move it aside before running.
+The stock `Makefile.2bsd` remains available for the upstream build path.
+No system compiler, libc, or login shell is replaced by this build.
+
+Two clean native builds of the validated shell produced identical binaries;
+interactive editing, completion, history and job control also passed.
+See [BUILD-RESULTS.txt](BUILD-RESULTS.txt) for the recorded binary hash and
+[README.mentec](README.mentec) for the workaround and limitations.
+The bootstrap snapshot is preserved unchanged; generated binaries and logs
+are excluded from source control. Subsequent toolchain or source changes can
+change the resulting executable hash.
+
+## Attribution and contributions
+
+Upstream baseline: `a7a376b650e1015afa044cbf3576ed78cfac5bd3` in
+`jdbruner/ksh`. Original history and notices are retained. See
+[LICENSE.txt](LICENSE.txt) and [native-tools/NOTICE](native-tools/NOTICE).
+
+Contributions should describe the machine and 2.11BSD patch level tested,
+include the regression result, and distinguish native from emulator tests.
+The two small C compatibility edits are retained from the validated build;
+testing whether they can be removed after the runtime fix is welcome.
+
+---
+
+The original upstream documentation follows.
+
 ## Overview
 
 This is the version of ksh from NetBSD-5.0.2 (which is based upon the
