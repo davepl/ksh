@@ -70,3 +70,20 @@ fixture now defines a function, and the test checks successful loading as
 well as output. The corrected suite ran against the freshly built shell:
 67 passed, 0 failed, with no autoload diagnostic.
 No C source, runtime code, or compiler inputs changed for this correction.
+
+Default make verification - 2026-09-29
+------------------------------------
+On Minerva, /usr/dave/source/repos/ksh, as ordinary user dave:
+- With no top-level Makefile, plain make reported no description file.
+- The default Makefile now selects Makefile.mentec.
+- A clean native build generated the private compiler/runtime helpers,
+  shell, and formatted manual page successfully.
+- A subsequent make required no further build commands.
+- make test: 67 passed, 0 failed.
+
+Minerva's /VERSION reports patch level 481, with locally updated headers.
+Its /usr/include/stdint.h existed but was not readable by dave; its read
+permissions were corrected before the build. No compatibility shim or
+system header content change was needed. This result does not establish
+support for an unmodified patch-level-481 installation.
+The installed /bin/ksh was not replaced.

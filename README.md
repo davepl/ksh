@@ -26,15 +26,18 @@ user who should own the source files:
 mkdir ksh
 cd ksh
 tar xf ../ksh-source.tar
-/bin/sh ./mentec-build.sh
+make
+make test
 ./ksh
 ```
 
 The build requires the native 2.11BSD C development tools and libc,
 `make`, `mkdep`, `sed`, `awk`, `tbl`, and `nroff`. Patch level 498 is the
-validated environment. Other patch levels, machines, and emulators have
-not been validated with this workaround. The upstream build below has
-its own requirements.
+original validated environment. The default build and all 67 tests also
+passed on Minerva, whose version file reports patch level 481 but whose
+headers have local updates; this is not a claim of support for stock 481.
+Other environments need validation. The upstream build below has its own
+requirements.
 
 A fresh checkout contains the small **compiler bootstrap object snapshot**
 and its source in `native-tools/from-host/`. Those `.o` files are intentional
@@ -44,10 +47,15 @@ or modern build tools are required on the PDP-11. This is a native shell build
 from source using preserved compiler objects, not a compiler bootstrap from
 source alone. See [native-tools/README](native-tools/README) for provenance.
 
-The script selects `Makefile.mentec`, rebuilds private compiler/runtime helpers,
+The checked-in `Makefile` selects `Makefile.mentec`, so plain `make` builds
+the private compiler/runtime helpers, shell, and manual page. `make test`
+runs the regression suite without installing the shell.
+
+For a clean rebuild with logs, run `/bin/sh ./mentec-build.sh`.
+The script uses `Makefile.mentec`, rebuilds private compiler/runtime helpers,
 cleans and compiles the shell, and runs **67 regression tests**. Expect
 `67 passed, 0 failed`. Logs remain in `build.log`, `depend.log`, and `tests.log`.
-If another `Makefile` is already selected, move it aside before running.
+If another `Makefile` is already selected, move it aside before running the script.
 The stock `Makefile.2bsd` remains available for the upstream build path.
 No system compiler, libc, or login shell is replaced by this build.
 
@@ -132,8 +140,13 @@ a Raspberry Pi for comparison to ksh on a PiDP-11/70. (If running ksh
 on Linux is the primary objective, consider using one of the more
 recent versions of ksh instead.)
 
-### Build/Install on 2.11BSD
+### Upstream build on 2.11BSD
+
+Plain `make` uses the supported local-runtime build above. To explicitly
+select the original upstream build instead, replace the supplied symlink:
+
 ```
+rm Makefile
 ln -s Makefile.2bsd Makefile
 make depend
 make
@@ -145,7 +158,11 @@ make install
 ```
 
 ### Build on Linux
+
+In a fresh source tree, replace the default 2.11BSD Makefile symlink:
+
 ```
+rm Makefile
 ln -s Makefile.linux Makefile
 make depend
 make
