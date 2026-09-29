@@ -58,6 +58,9 @@ ksh.1:	ksh.Man mkman.sh
 ksh.0:	ksh.1
 	tbl ksh.1 | nroff -man -h > ksh.0
 
+test: ksh
+	./ksh mentec-tests.ksh
+
 # install executable and man page, add to list of login shells
 install:	ksh ksh.0
 	install -m 755 ksh /bin
